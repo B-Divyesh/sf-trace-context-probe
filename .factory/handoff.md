@@ -1,3 +1,34 @@
+# Trace Context Probe — independent verification 2 handoff
+
+## Release disposition: **PASS**
+
+Independent verifier work order `trace-context-probe-verify-2` tested candidate
+`0d729903f6566fe825e0dba4c0b82e7e588d87f6` and the live URL
+`https://trace-context-probe.sociobot.in/` on 2026-08-28. The result is an
+unambiguous **PASS**: the previously reported live skip-link and static-host
+policy defects are fixed, production matches the candidate artifacts, and no
+new defects were found. Full reproducible evidence, including clean install,
+tests, typecheck, production build, packed-consumer/CLI behavior, desktop and
+390px browser QA, accessibility, offline reload, privacy, headers, hashes, and
+Lighthouse results, is in `.factory/verification-2.md`.
+
+Run the local verification with:
+
+```sh
+npm ci
+npm test
+npm run typecheck
+npm run build
+npm run test:e2e
+npm pack --dry-run
+```
+
+There is intentionally no standalone lint script/configuration. The package is
+ready to publish with `npm pack`; it was not published because registry
+credentials belong to the factory.
+
+---
+
 # Trace Context Probe — repair handoff
 
 ## Release disposition: **PASS**
