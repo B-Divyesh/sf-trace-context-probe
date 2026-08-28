@@ -24,10 +24,18 @@ test('finds all five exact first broken boundaries', async ({ page }) => {
   await expect(page.getByText(/then the first loss is reported exactly at queue.consume/)).toBeVisible();
 });
 
-test('supports keyboard navigation and local operation while offline', async ({ page, context }) => {
+test('skip link moves focus into main content', async ({ page }) => {
   await page.goto('/');
   await page.keyboard.press('Tab');
   await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused();
+  await page.keyboard.press('Enter');
+  await expect(page.locator('main')).toBeFocused();
+  await page.keyboard.press('Tab');
+  await expect(page.getByRole('button', { name: 'Copy install command' }).first()).toBeFocused();
+});
+
+test('supports keyboard navigation and local operation while offline', async ({ page, context }) => {
+  await page.goto('/');
   await context.setOffline(true);
   await page.evaluate(() => window.dispatchEvent(new Event('offline')));
   await expect(page.getByText(/Offline mode/)).toBeVisible();
