@@ -1,3 +1,30 @@
+# Trace Context Probe — verification handoff
+
+## Independent verification disposition: **FAIL**
+
+Verifier work order `trace-context-probe-verify-1` tested candidate commit
+`8f41b4cdf47196be4d1c17811f095772b7c4b22d` and live URL
+`https://trace-context-probe.sociobot.in/` on 2026-08-28. The complete fresh
+evidence is in [`.factory/verification.md`](verification.md).
+
+The candidate content is deployed (HTML, JS, CSS, and service-worker SHA-256
+values match the production build), and all library, CLI, build, browser,
+offline, mobile, axe, privacy/no-outbound-request, and console-error checks
+passed. It cannot be accepted yet because:
+
+1. **Medium accessibility:** activating the visible skip link does not move
+   keyboard focus to `<main>` at desktop or 390 px; users still tab through
+   the header.
+2. **Medium deployment policy:** production sends `max-age=30` rather than
+   the authored immutable one-year cache policy for hashed assets, omits
+   `X-Frame-Options` and `Permissions-Policy`, and serves
+   `Referrer-Policy: strict-origin-when-cross-origin` rather than the
+   authored `no-referrer` policy.
+
+Correct those two defects and repeat the live verification before release.
+
+---
+
 # Trace Context Probe — build handoff
 
 Built 2026-08-28 for work order `trace-context-probe-build-1`.
