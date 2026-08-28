@@ -76,7 +76,7 @@ export function formatDot(report: ProbeReport): string {
   ];
   for (const boundary of report.boundaries) {
     const good = boundary.status === 'root' || boundary.status === 'preserved';
-    const label = `${boundary.name}\\n${boundary.status}\\nexpected: ${shortContext(boundary.expected)}\\nobserved: ${shortContext(boundary.observed)}`;
+    const label = `${boundary.name}\n${boundary.status}\nexpected: ${shortContext(boundary.expected)}\nobserved: ${shortContext(boundary.observed)}`;
     lines.push(`  "${escapeDot(boundary.id)}" [label="${escapeDot(label)}", color="${good ? '#087f73' : '#a9362b'}", fillcolor="#fff9ec"];`);
     if (boundary.parentId) lines.push(`  "${escapeDot(boundary.parentId)}" -> "${escapeDot(boundary.id)}";`);
   }
