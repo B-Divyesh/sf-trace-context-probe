@@ -1,0 +1,11 @@
+{
+  "slug": "trace-context-probe",
+  "title": "Trace Context Probe",
+  "territory": "devtools-data",
+  "user": "Node.js service teams adding OpenTelemetry instrumentation who need to prove where async trace context is lost across queues, callbacks, and framework boundaries.",
+  "smallest_useful_product": "A Node CLI/test helper that inserts named async-boundary probes, records expected versus observed trace/span lineage, and emits a static propagation graph with minimal attributes.",
+  "success_measure": "A test fixture with five intentionally broken context boundaries reports the exact first broken boundary in all five cases.",
+  "artifact_class": "library-npm",
+  "monetization": "free",
+  "constraints": "Do not depend on private SDK fields in the stable core; capture no request bodies; support explicit version compatibility matrices."
+}
