@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Find the exact Node.js async boundary where OpenTelemetry trace context is lost." />
+    <meta name="theme-color" content="#f3ead7" />
+    <link rel="canonical" href="https://trace-context-probe.sociobot.in/" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>Trace Context Probe — find the first broken async boundary</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <div class="offline-note" id="offline-note" role="status" hidden>
+      Offline mode · the probe still runs locally. Nothing is sent anywhere.
+    </div>
+    <header class="site-header">
+      <a class="wordmark" href="#top" aria-label="Trace Context Probe home">
+        <span aria-hidden="true" class="wordmark-mark"><i></i><i></i><i></i></span>
+        <span>Trace Context Probe</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="#probe">Live probe</a>
+        <a href="#api">API</a>
+        <a href="#compatibility">Compatibility</a>
+        <a href="https://github.com/B-Divyesh/sf-trace-context-probe">GitHub</a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="top" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="eyebrow-knot" aria-hidden="true"></span> Pre-export trace diagnostics</p>
+          <h1 id="hero-title">Catch the exact hop that dropped your trace.</h1>
+          <p class="lede">A tiny Node.js test helper for proving context lineage across queues, callbacks, streams, timers, and framework edges—before misleading spans reach your backend.</p>
+          <div class="install-strip" aria-label="Install command">
+            <code>npm i -D trace-context-probe</code>
+            <button class="copy-button" type="button" data-copy="npm i -D trace-context-probe" aria-label="Copy install command">Copy</button>
+          </div>
+          <div class="hero-actions">
+            <a class="button button--primary" href="#probe">Try the five break tests</a>
+            <a class="text-link" href="#quickstart">Read the 60-second setup <span aria-hidden="true">→</span></a>
+          </div>
+          <ul class="trust-list" aria-label="Product properties">
+            <li>No SDK internals</li>
+            <li>Zero runtime dependencies</li>
+            <li>No payload capture</li>
+          </ul>
+        </div>
+        <figure class="hero-art">
+          <span class="paper-label" aria-hidden="true">trace / async / boundary</span>
+          <img src="/hero-diorama.webp" width="1152" height="768" fetchpriority="high" alt="Paper-cut diorama of a teal trace thread crossing layered async portals before a torn gap" />
+          <figcaption>The first torn edge is the useful one.</figcaption>
+        </figure>
+      </section>
+
+      <section class="probe-section" id="probe" aria-labelledby="probe-heading">
+        <div class="section-intro">
+          <p class="eyebrow">Executable proof</p>
+          <h2 id="probe-heading">Five ways context disappears. Five exact answers.</h2>
+          <p>This local simulation runs the same comparison engine as the npm package. Each fixture breaks a different boundary and checks whether the first reported name is exact.</p>
+        </div>
+
+        <div class="probe-workbench">
+          <div class="workbench-toolbar">
+            <div>
+              <span class="toolbar-label">Fixture suite</span>
+              <strong>async-loss.spec.ts</strong>
+            </div>
+            <button class="button button--run" id="run-tests" type="button">
+              <span class="run-icon" aria-hidden="true">▶</span>
+              <span>Run five break tests</span>
+            </button>
+          </div>
+
+          <div id="probe-status" class="probe-status" aria-live="polite">
+            <div class="empty-state">
+              <span class="empty-spool" aria-hidden="true"></span>
+              <div><strong>No probe run yet</strong><p>Run the fixture suite to inspect each first broken boundary.</p></div>
+            </div>
+          </div>
+
+          <div id="results-panel" class="results-panel" hidden>
+            <fieldset class="scenario-picker" id="scenario-picker">
+              <legend>Inspect a fixture result</legend>
+              <div class="scenario-options"></div>
+            </fieldset>
+            <div class="diagnostic" id="diagnostic">
+              <div class="verdict" id="verdict"></div>
+              <div class="lineage-wrap" tabindex="0" role="region" aria-label="Scrollable propagation graph">
+                <ol class="lineage" id="lineage" aria-label="Trace context propagation graph"></ol>
+              </div>
+              <p class="graph-alternative" id="graph-alternative"></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="mechanism" aria-labelledby="mechanism-heading">
+        <div class="section-intro">
+          <p class="eyebrow">Observe, don’t interfere</p>
+          <h2 id="mechanism-heading">One expectation. One observation. No patched internals.</h2>
+        </div>
+        <ol class="mechanism-steps">
+          <li><span aria-hidden="true">01</span><div><h3>Mark the known-good span</h3><p>Capture only its public trace ID and span ID.</p></div></li>
+          <li><span aria-hidden="true">02</span><div><h3>Wrap the boundary</h3><p>The wrapper observes when the real callback runs. It never binds context for you.</p></div></li>
+          <li><span aria-hidden="true">03</span><div><h3>Export the first tear</h3><p>Get JSON for CI, DOT for tooling, or a standalone HTML graph for a bug report.</p></div></li>
+        </ol>
+      </section>
+
+      <section class="quickstart" id="quickstart" aria-labelledby="quickstart-heading">
+        <div class="quickstart-copy">
+          <p class="eyebrow">60-second setup</p>
+          <h2 id="quickstart-heading">Put the proof beside the boundary.</h2>
+          <p>The stable core accepts your own context reader. The optional adapter uses only OpenTelemetry’s public API.</p>
+          <a class="text-link" href="https://github.com/B-Divyesh/sf-trace-context-probe#usage">See complete usage and CLI exits <span aria-hidden="true">→</span></a>
+        </div>
+        <div class="code-window" id="api" aria-label="TypeScript usage example">
+          <div class="code-window-bar"><span>worker.ts</span><button class="copy-button copy-button--dark" type="button" data-copy-target="usage-code">Copy code</button></div>
+          <pre><code id="usage-code"><span class="token-key">import</span> { createOpenTelemetryProbe } <span class="token-key">from</span>
+  <span class="token-string">'trace-context-probe/opentelemetry'</span>;
+
+<span class="token-key">const</span> probe = createOpenTelemetryProbe({
+  name: <span class="token-string">'checkout-worker'</span>
+});
+
+<span class="token-key">const</span> request = probe.mark(<span class="token-string">'http.request'</span>);
+queue.consume(probe.wrap(
+  <span class="token-string">'queue.consume'</span>, { expect: request }, handler
+));
+
+<span class="token-key">const</span> report = probe.report();
+<span class="token-comment">// report.firstBrokenBoundary?.name</span></code></pre>
+        </div>
+      </section>
+
+      <section class="compatibility" id="compatibility" aria-labelledby="compatibility-heading">
+        <div>
+          <p class="eyebrow">Explicit compatibility</p>
+          <h2 id="compatibility-heading">Small surface. Boring dependencies.</h2>
+          <p>Use the core with any tracer, or add the optional public OpenTelemetry adapter. Exporters and vendors stay out of the diagnostic path.</p>
+        </div>
+        <div class="compat-table-wrap">
+          <table>
+            <caption class="sr-only">Supported runtime and API versions</caption>
+            <thead><tr><th scope="col">Component</th><th scope="col">Supported</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Node.js</th><td>18 · 20 · 22 · 24</td></tr>
+              <tr><th scope="row">TypeScript</th><td>5.2 and newer</td></tr>
+              <tr><th scope="row">OpenTelemetry API</th><td>1.7–1.x (optional)</td></tr>
+              <tr><th scope="row">Package formats</th><td>ESM · CommonJS · .d.ts</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="closing" aria-labelledby="closing-heading">
+        <span class="closing-thread" aria-hidden="true"></span>
+        <p class="eyebrow">Vendor-neutral · MIT licensed</p>
+        <h2 id="closing-heading">Fix the first break.<br />Trust everything after it.</h2>
+        <div class="install-strip install-strip--center" aria-label="Install command">
+          <code>npm i -D trace-context-probe</code>
+          <button class="copy-button" type="button" data-copy="npm i -D trace-context-probe" aria-label="Copy install command">Copy</button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div><strong>Trace Context Probe</strong><span>A focused diagnostic, not another telemetry backend.</span></div>
+      <nav aria-label="Footer navigation">
+        <a href="https://github.com/B-Divyesh/sf-trace-context-probe">Source</a>
+        <a href="https://github.com/B-Divyesh/sf-trace-context-probe/blob/main/LICENSE">MIT license</a>
+        <a href="#top">Back to top</a>
+      </nav>
+    </footer>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

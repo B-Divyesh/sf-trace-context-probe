@@ -4,3 +4,7 @@ dist/
 *.log
 graphify-out/
 .DS_Store
+playwright-report/
+test-results/
+.factory/artifacts/lighthouse*.json
+.factory/artifacts/site-*.png
