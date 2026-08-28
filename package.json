@@ -1,0 +1,81 @@
+{
+  "name": "trace-context-probe",
+  "version": "0.1.0",
+  "description": "Find the first Node.js async boundary that loses OpenTelemetry trace context.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/library/index.cjs",
+  "module": "./dist/library/index.js",
+  "types": "./dist/library/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/library/index.d.ts",
+      "import": "./dist/library/index.js",
+      "require": "./dist/library/index.cjs"
+    },
+    "./opentelemetry": {
+      "types": "./dist/library/opentelemetry.d.ts",
+      "import": "./dist/library/opentelemetry.js",
+      "require": "./dist/library/opentelemetry.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "trace-context-probe": "./dist/library/cli.cjs"
+  },
+  "files": [
+    "dist/library",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "peerDependencies": {
+    "@opentelemetry/api": ">=1.7.0 <2"
+  },
+  "peerDependenciesMeta": {
+    "@opentelemetry/api": {
+      "optional": true
+    }
+  },
+  "scripts": {
+    "dev": "vite --config site/vite.config.ts",
+    "clean": "node scripts/clean.mjs",
+    "build:lib": "tsup",
+    "build:site": "vite build --config site/vite.config.ts",
+    "build": "npm run clean && npm run build:lib && npm run build:site",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "test:all": "npm test && npm run build && npm run test:e2e",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.10.2",
+    "@opentelemetry/api": "^1.9.0",
+    "@playwright/test": "1.58.2",
+    "@types/node": "^22.10.0",
+    "playwright-core": "1.58.2",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "vite": "^8.2.2",
+    "vitest": "^4.1.11"
+  },
+  "overrides": {
+    "esbuild": "^0.28.1"
+  },
+  "keywords": [
+    "opentelemetry",
+    "tracing",
+    "async-local-storage",
+    "diagnostics",
+    "nodejs"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/B-Divyesh/sf-trace-context-probe.git"
+  },
+  "homepage": "https://trace-context-probe.sociobot.in"
+}
