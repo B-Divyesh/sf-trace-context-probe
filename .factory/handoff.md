@@ -1,3 +1,76 @@
+# Trace Context Probe — repair handoff
+
+## Release disposition: **PASS**
+
+Repair work order `trace-context-probe-repair-1` repaired the two release
+blockers from independent verification commit
+`d68913113beb3a2d1099d0ad343333a2ff9af3e2`, preserving candidate
+`8f41b4cdf47196be4d1c17811f095772b7c4b22d`'s passed library and site
+behavior. The repair is committed and pushed as
+`b43ce5c20cd0f5e885da846fbfcb84e73d989963` and deployed to
+`https://trace-context-probe.sociobot.in/` on 2026-08-28.
+
+### Repairs
+
+1. The `#main` target is now programmatically focusable with `tabindex="-1"`.
+   A production-build Playwright regression test activates the skip link,
+   asserts that `<main>` owns focus, then verifies that the next Tab enters
+   main content rather than returning to the header. It runs in both desktop
+   and 390 × 844 profiles.
+2. `site/public/staticwebapp.config.json` supplies the Azure Static Web Apps
+   response policy that the prior `_headers` artifact could not apply. It
+   emits `Referrer-Policy: no-referrer`, `X-Frame-Options: DENY`,
+   `Permissions-Policy: camera=(), microphone=(), geolocation=()`, and
+   `X-Content-Type-Options: nosniff` globally; hashes under `/assets/*` and
+   `/hero-diorama.webp` receive `public, max-age=31536000, immutable`; the
+   service worker receives `Cache-Control: no-cache`. A Vitest regression test
+   asserts every required source policy, and the browser suite now serves the
+   generated production site through `vite preview`.
+
+### Exact verification evidence
+
+- Clean `npm ci`: passed; 96 packages installed and audit reported 0
+  vulnerabilities.
+- `npm test`: passed, 3 files / 14 tests (including the static-host-policy
+  regression).
+- `npm run typecheck`: passed.
+- `npm run build`: passed; `dist/library` and `dist/site` produced. The site
+  remains 7.02 kB JS (3.07 kB gzip), 14.99 kB CSS (4.17 kB gzip), and 40.96 kB
+  hero WebP.
+- `npm run test:e2e`: passed, 10/10 Chromium tests against the production
+  build: desktop and 390 × 844 mobile, keyboard skip focus, five exact
+  boundaries, offline interaction, and axe.
+- `npm audit --audit-level=low`: passed; 0 vulnerabilities.
+- `npm pack --json`: passed; 22 files, 19,264-byte tarball. A newly initialized
+  temporary consumer installed that tarball; ESM import, CommonJS `require`,
+  and CLI `--help` all passed. Nothing was published; use `npm pack` when the
+  factory is ready to publish.
+- Deployment used `/opt/fleet/lib/deploy-static.sh trace-context-probe
+  /work/repo/dist/site`. Live response captures returned HTTP 200 and the
+  required policy: hashed JS and hero `Cache-Control: public,
+  max-age=31536000, immutable`; `/sw.js` `Cache-Control: no-cache`; and all
+  required global security headers. The live and local SHA-256 values match
+  for `index.html` (`be42c2e39f85282a29aceeca453196eed6a157eed8233e333c37b450f003d0e8`)
+  and `assets/index-C9A-cYPE.js`
+  (`aaa96737710e748b9c05cae6aa74fa99c84c58b522c28b129495a4c95ec223b5`).
+- Live keyboard-only checks at 1440 × 900 and 390 × 844 both reported
+  `skipFocused: true` and `mainFocused: true`; there was no document overflow
+  and no console/page error. After service-worker activation, an actual offline
+  reload reran all five fixtures successfully in both profiles. Live axe found
+  0 serious or critical violations in both profiles. `/opt/fleet/lib/verify-url.sh`
+  recorded HTTP 200, a title, `lang="en"`, one h1, a main landmark, zero images
+  without alt text, zero unlabeled buttons, zero console errors, and a 600 ms
+  network-idle load.
+
+### Known gaps and next steps
+
+No release-blocking gaps remain. The project intentionally has no standalone
+lint script; strict TypeScript checking is run with `npm run typecheck` and
+the existing test/build/browser checks are listed above. The library remains
+unpublished because registry credentials belong to the factory.
+
+---
+
 # Trace Context Probe — verification handoff
 
 ## Independent verification disposition: **FAIL**
